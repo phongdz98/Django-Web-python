@@ -71,5 +71,5 @@ def delete_record(request, pk):
         return redirect('home')
 
 
-def add_record():
-    return None
+def add_record(request):
+    return render(request, 'add_record.html', {})
