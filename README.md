@@ -1,2 +1,2 @@
 # Django-Web-python
-# KUR AI
+Kur AI
