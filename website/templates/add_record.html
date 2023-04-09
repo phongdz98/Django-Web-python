@@ -5,7 +5,8 @@
 <form method="POST" action="{% url 'add_record' %}">
 {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-secondary">SAVE</button>
+    <button type="submit" class="btn btn-secondary">S</button>
+    <a href="{% url 'home' %} " class="btn btn-secondary">Back</a>
 </form>
 </div>
 {% endblock %}
