@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class Record(models.Model):
@@ -14,5 +15,14 @@ class Record(models.Model):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
+
+
+class User(AbstractUser):
+    is_admin = models.BooleanField('Is Admin', default=False)
+    is_technician = models.BooleanField('Is Technician', default=False)
+    is_employee = models.BooleanField('Is Employee', default=False)
+
+
+
 
 
