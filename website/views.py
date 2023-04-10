@@ -6,30 +6,45 @@ from .models import Record
 
 
 def home(request):
-    records = Record.objects.all()
+    if request.user.is_authenticated:
+        records = Record.objects.all()
+        # Check to see if logging in
+        return render(request, 'home.html', {"records": records})
+    else:
+        messages.success(request, "You must be Logged In to View That Page!!!")
+        return redirect('login')
 
 
-    # Check to see if logging in
+
+def login_user(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
         # Authenticate
         user = authenticate(request, username=username, password=password)
-        if user is not None:
+        if user is not None and user.is_admin:
             login(request, user)
             messages.success(request, "You Have Been Logged In!")
-            return redirect('home')
+            return redirect('admin')
+        elif user is not None and user.is_technician:
+            login(request, user)
+            messages.success(request, "You Have Been Logged In!")
+            return redirect('technician')
+        elif user is not None and user.is_employee:
+            login(request, user)
+            messages.success(request, "You Have Been Logged In!")
+            return redirect('employee')
         else:
             messages.success(request, "Error Logging In!")
-            return redirect('home')
-    else:
-        return render(request, 'home.html', {"records": records})
+            return redirect('login')
+    return render(request, 'login.html')
+
 
 
 def logout_user(request):
     logout(request)
     messages.success(request, "You have been Logged Out...")
-    return redirect('home')
+    return redirect('login')
 
 
 def register_user(request):
@@ -43,11 +58,23 @@ def register_user(request):
             user = authenticate(username=username, password=password)
             login(request, user)
             messages.success(request, "You Have Successfully Registered!")
-            return redirect('home')
+            return redirect('login')
     else:
         form = SignUpForm()
         return render(request, 'register.html', {'form': form})
     return render(request, 'register.html', {'form': form})
+
+
+def admin(request):
+    return render(request, 'admin.html')
+
+
+def technician(request):
+    return render(request, 'technician.html')
+
+
+def employee(request):
+    return render(request, 'employee.html')
 
 
 def customer_record(request, pk):
@@ -98,4 +125,4 @@ def update_record(request, pk):
         messages.success(request, f"You must be logged in....")
         return redirect('home')
 
-        
+

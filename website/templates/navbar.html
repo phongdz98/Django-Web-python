@@ -1,38 +1,14 @@
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark" data-bs-theme="dark">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{% url 'home'%}">
-      Phong Company
-    </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTop" aria-controls="navbarTop" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarTop">
-      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-        </li>
-        {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'register' %}"> Register</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">Login</a>
-        </li>
-        {% endif %}
-      </ul>
-    </div>
-  </div>
-</nav>
-<nav class="navbar navbar-expand-sm bg-light navbar-light">
+                                                                       {% if user.is_authenticated %}
+  {% if user.is_admin %}
+  <nav class="navbar navbar-expand-sm bg-light navbar-light">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBottom" aria-controls="navbarBottom" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarBottom">
+    <div class="collapse navbar-collapse" >
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Home</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Admin</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="{% url 'home'%}">Person</a>
@@ -47,7 +23,53 @@
     </div>
   </div>
 </nav>
-
-
-
-
+  {% elif user.is_technician%}
+    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBottom" aria-controls="navbarBottom" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" >
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Technician</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home'%}">Person</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Option 2</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Option 3</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  {% elif user.is_employee %}
+  <nav class="navbar navbar-expand-sm bg-light navbar-light">
+  <div class="container-fluid">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBottom" aria-controls="navbarBottom" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" >
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Employee</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home'%}">Person</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Option 2</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Option 3</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+  {% endif %}
+  {% endif %}
