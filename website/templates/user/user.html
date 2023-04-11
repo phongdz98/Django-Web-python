@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="d-flex justify-content-between">
+        <h3>Users</h3>
+        <a href="{% url 'register' %}" class="btn btn-primary">Add User</a>
+    </div>
+    <br/>
+    <table class="table table-bordered table-hover">
+    <thead class="table-dark ">
+    <tr>
+      <th scope="col">Username </th>
+      <th scope="col">Full Name</th>
+        <th scope="col">Email address</th>
+        <th scope="col">Role</th>
+        <th scope="col">ID</th>
+    </tr>
+  </thead>
+  <tbody>
+
+        {% if users %}
+
+            {% for u in users %}
+                <tr>
+                    <td><a class="link-offset-2
+                     link-offset-3-hover link-underline link-underline-opacity-0
+                     link-underline-opacity-75-hover" href="{% url 'user_info' u.id %}">
+                        {{ u.username}}</a></td>
+                    <td>{{ u.first_name }} {{ u.last_name }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{% if u.is_admin %}  Admin {% elif u.is_technician %}
+                        Technician {% elif u.is_employee %} Employee</td>
+                    {% endif %}
+                    <td>{{ u.id }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+
+  </tbody>
+</table>
+
+{% endblock %}

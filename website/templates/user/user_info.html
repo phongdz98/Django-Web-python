@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="card">
+  <div class="card-header">
+    {{cus_user.username}}
+  </div>
+  <div class="card-body">
+    <p class="card-text"><strong>Full Name: </strong>{{ cus_user.first_name }} {{ cus_user.last_name }}</p>
+    <p class="card-text"><strong>Email: </strong>{{ cus_user.email }}</p>
+    <p class="card-text"><strong>Role: </strong>{% if cus_user.is_admin %}  Admin {% elif cus_user.is_technician %}
+                        Technician {% elif cus_user.is_employee %} Employee {% endif %}</p>
+
+  </div>
+</div>
+<br/>
+<br/>
+<a href="{% url 'users' %} " class="btn btn-secondary">Back</a>
+<a href="{% url 'delete_user' cus_user.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'update_user' cus_user.id %}" class="btn btn btn-secondary">Update</a>
+{% endblock %}
