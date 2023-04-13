@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="d-flex justify-content-between">
+        <h3>Person</h3>
+        <a href="{% url 'add_person' %}" class="btn btn-primary">Add Person</a>
+    </div>
+    <br/>
+    <table class="table table-bordered table-hover">
+    <thead class="table-dark ">
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">User Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Address</th>
+        <th scope="col">City</th>
+        <th scope="col">State</th>
+        <th scope="col">Zipcode</th>
+        <th scope="col">Created At</th>
+        <th scope="col">ID</th>
+    </tr>
+  </thead>
+  <tbody>
+
+        {% if persons %}
+
+            {% for person in persons %}
+                <tr>
+                    <td><a class="link-offset-2
+                     link-offset-3-hover link-underline link-underline-opacity-0
+                     link-underline-opacity-75-hover" href="">
+                        {{ person.first_name }} {{ person.last_name }}</a></td>
+                    <td>{{person.username}}</td>
+                    <td>{{ person.email }}</td>
+                    <td>{{ person.phone }}</td>
+                    <td>{{ person.address }}</td>
+                    <td>{{ person.city }}</td>
+                    <td>{{ person.state }}</td>
+                    <td>{{ person.zipcode }}</td>
+                    <td>{{ person.created_at }}</td>
+                    <td>{{ person.id }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+
+  </tbody>
+</table>
+
+{% endblock %}
+

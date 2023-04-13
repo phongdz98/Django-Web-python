@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .form import SignUpForm, AddRecordForm, UpdateUserForm
-from .models import Record, User
+from .form import SignUpForm, AddRecordForm, UpdateUserForm, PersonForm
+from .models import Record, User, Person
 
 
 def home(request):
@@ -15,6 +15,7 @@ def home(request):
         return redirect('login')
 
 
+# views for user
 def watch_users(request):
     if request.user.is_authenticated :
         if request.user.is_admin:
@@ -217,3 +218,29 @@ def update_record(request, pk):
     else:
         messages.success(request, f"You must be logged in....")
         return redirect('home')
+
+
+# views for person
+
+def person_read(request):
+    if request.user.is_authenticated:
+        persons = Person.objects.all()
+        # Check to see if logging in
+        return render(request, 'person/persons.html', {"persons": persons})
+    else:
+        messages.success(request, "You must be Logged In to View That Page!!!")
+        return redirect('login')
+
+
+def add_person(request):
+    form = PersonForm(request.POST or None)
+    if request.user.is_authenticated:
+        if request.method == "POST":
+            if form.is_valid():
+                add_per = form.save()
+                messages.success(request, f"Person Added....")
+                return redirect('person')
+        return render(request, 'person/add_person.html', {'form': form})
+    else:
+        messages.success(request, f"You must be logged in....")
+        return redirect('login')
