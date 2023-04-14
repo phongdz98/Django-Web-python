@@ -42,6 +42,43 @@ class Person(models.Model):
         return f"{self.first_name} {self.last_name}"
 
 
+class Frame(models.Model):
+    frame_name = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.frame_name}"
 
 
+class Slot(models.Model):
+    slot_name = models.CharField(max_length=200)
+    frames = models.ManyToManyField(Frame, through='Example')
 
+    def __str__(self):
+        return f"{self.slot_name}"
+
+
+class SlotValue(models.Model):
+    value_name = models.CharField(max_length=200)
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
+    slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.value_name}"
+
+
+class Example(models.Model):
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
+    slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
+    slot_value = models.ForeignKey(SlotValue, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.frame} - {self.slot} - {self.slot_value}'
+
+
+class Dialog(models.Model):
+    frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
+    slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
+    slot_value = models.ForeignKey(SlotValue, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.frame} - {self.slot} - {self.slot_value}'
