@@ -20,4 +20,10 @@ urlpatterns = [
     # Person URLS
     path('person', views.person_read, name='person'),
     path('add_person', views.add_person, name='add_person'),
+
+
+    # Dialog URLS
+    path('add_slots_to_frame/<int:frame_id>', views.add_slots_to_frame, name='add_slots_to_frame'),
+    path('add_slot_values/<int:frame_id>', views.add_slot_values, name='add_slot_values'),
+
 ]

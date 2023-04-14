@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container"><div class="row">
+   <div class="col-md-6">
+    <h3>Add Slot</h3>
+    <br/>
+    <form method="POST" >
+        {% csrf_token %}
+        <select class="form-control" id="selected_slots" name="selected_slots" multiple required style="width: 300px; height: 100px;"  >
+            {% for slot in slots %}
+                <option value="{{ slot.id }}">{{ slot.slot_name }}</option>
+            {% endfor %}
+        </select><br/>
+        <button type="submit" class="btn btn-secondary">Add</button>
+
+    </form>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+          <h4 class="card-header">
+           <strong>Frame {{ frame.frame_name }}</strong>
+          </h4>
+          <ul class="list-group list-group-flush">
+            {% for slot in frame.slot_set.all %}
+                <li class="list-group-item">{{ slot.slot_name }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+    </div>
+</div></div>
+{% endblock %}

@@ -68,17 +68,17 @@ class SlotValue(models.Model):
 
 class Example(models.Model):
     frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
-    slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
-    slot_value = models.ForeignKey(SlotValue, on_delete=models.CASCADE)
+    slot = models.ForeignKey(Slot, on_delete=models.CASCADE, blank=True, null=True)
+    slot_value = models.ForeignKey(SlotValue, on_delete=models.CASCADE, blank=True, null=True)
 
     def __str__(self):
         return f'{self.frame} - {self.slot} - {self.slot_value}'
 
 
-class Dialog(models.Model):
-    frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
-    slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
-    slot_value = models.ForeignKey(SlotValue, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f'{self.frame} - {self.slot} - {self.slot_value}'
+# class Dialog(models.Model):
+#     frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
+#     slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
+#     slot_value = models.ForeignKey(SlotValue, on_delete=models.CASCADE)
+#
+#     def __str__(self):
+#         return f'{self.frame} - {self.slot} - {self.slot_value}'

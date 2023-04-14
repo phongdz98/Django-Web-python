@@ -2,7 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .form import SignUpForm, AddRecordForm, UpdateUserForm, PersonForm
-from .models import Record, User, Person
+from .models import Record, User, Person, Frame, Slot, SlotValue, Example
+from django.db.models import Q
 
 
 def home(request):
@@ -17,7 +18,7 @@ def home(request):
 
 # views for user
 def watch_users(request):
-    if request.user.is_authenticated :
+    if request.user.is_authenticated:
         if request.user.is_admin:
             users = User.objects.all()
             # Check to see if logging in
@@ -94,8 +95,6 @@ def update_user(request, pk):
     else:
         messages.success(request, f"You must be logged in....")
         return redirect('login')
-
-
 
 
 def login_user(request):
@@ -244,3 +243,38 @@ def add_person(request):
     else:
         messages.success(request, f"You must be logged in....")
         return redirect('login')
+
+
+# dialog system
+def add_slots_to_frame(request, frame_id):
+    frame = Frame.objects.get(id=frame_id)
+    slots = Slot.objects.all()
+    if request.method == 'POST':
+        # Lấy danh sách các slot được chọn từ form
+        selected_slots = request.POST.getlist('selected_slots')
+        # Thêm các slot được chọn vào frame
+        for slot_id in selected_slots:
+            slot = Slot.objects.get(id=slot_id)
+            slot.frames.add(frame)
+        return redirect('add_slots_to_frame',frame_id=frame_id)
+    return render(request, 'dialog/add_slots_to_frame.html', {'frame': frame, 'slots': slots})
+
+
+def add_slot_values(request, frame_id):
+    frame = Frame.objects.get(id=frame_id)
+    slots = Slot.objects.filter(frames=frame)  # Lọc các đối tượng Slot đã liên kết với frame
+    if request.method == 'POST':
+        # Thêm các slot_value vào tất cả các slot trong frame
+        for slot in slots:
+            slot_value_name = request.POST.get('slot_value_{}'.format(slot.id))  # Lấy giá trị slot_value từ form
+            if slot_value_name and not SlotValue.objects.filter(slot=slot, frame=frame, value_name=slot_value_name).exists():
+                slot_value = SlotValue(value_name=slot_value_name, frame=frame, slot=slot)
+                slot_value.save()
+                example = Example.objects.get(frame=frame, slot=slot)
+                slot_value = SlotValue.objects.get(slot=slot, frame=frame, value_name=slot_value_name)
+                example.slot_value = slot_value
+                example.save()
+        return redirect('add_slots_to_frame', frame_id=frame_id)
+    return render(request, 'dialog/add_slot_values.html', {'frame': frame, 'slots': slots})
+
+
