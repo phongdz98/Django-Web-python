@@ -3,7 +3,6 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .form import SignUpForm, AddRecordForm, UpdateUserForm, PersonForm
 from .models import Record, User, Person, Frame, Slot, SlotValue, Example
-from django.db.models import Q
 
 
 def home(request):
@@ -245,7 +244,71 @@ def add_person(request):
         return redirect('login')
 
 
-# dialog system
+# Dialog System
+
+def frame_read(request):
+    if request.user.is_authenticated:
+        frames = Frame.objects.all()
+        if request.method == 'POST':
+            frame_name = request.POST.get('frame-name')
+            frame = Frame(frame_name=frame_name)
+            frame.save()
+            messages.success(request, f"Frame Added....")
+            return redirect('frame')
+        return render(request, 'dialog/frames.html', {"frames": frames})
+    else:
+        messages.success(request, "You must be Logged In to View That Page!!!")
+        return redirect('login')
+
+
+def frame_info(request, pk):
+    if request.user.is_authenticated:
+        current_frame = Frame.objects.get(id=pk)
+        slots = Slot.objects.filter(frames=current_frame)
+        examples = Example.objects.filter(frame=current_frame)
+        return render(request, 'dialog/frame_info.html', {'current_frame': current_frame, 'current_slots': slots, 'examples':examples})
+    else:
+        messages.success(request, "You must be Logged In to View That Page!!!")
+        return redirect('home')
+
+
+def delete_frame(request, pk):
+    if request.user.is_authenticated:
+        delete_fr = Frame.objects.get(id=pk)
+        delete_fr.delete()
+        messages.success(request, f"Frame Deleted Successfully ...")
+        return redirect('frame')
+    else:
+        messages.success(request, "You must be Logged In to do that!!!")
+        return redirect('login')
+
+
+def slot_read(request):
+    if request.user.is_authenticated:
+        slots = Slot.objects.all()
+        if request.method == 'POST':
+            slot_name = request.POST.get('slot-name')
+            slot = Slot(slot_name=slot_name)
+            slot.save()
+            messages.success(request, f"Slot Added....")
+            return redirect('slot')
+        return render(request, 'dialog/slots.html', {"slots": slots})
+    else:
+        messages.success(request, "You must be Logged In to View That Page!!!")
+        return redirect('login')
+
+
+def delete_slot(request, pk):
+    if request.user.is_authenticated:
+        delete_sl = Slot.objects.get(id=pk)
+        delete_sl.delete()
+        messages.success(request, f"Slot Deleted Successfully ...")
+        return redirect('slot')
+    else:
+        messages.success(request, "You must be Logged In to do that!!!")
+        return redirect('login')
+
+
 def add_slots_to_frame(request, frame_id):
     frame = Frame.objects.get(id=frame_id)
     slots = Slot.objects.all()
@@ -256,25 +319,31 @@ def add_slots_to_frame(request, frame_id):
         for slot_id in selected_slots:
             slot = Slot.objects.get(id=slot_id)
             slot.frames.add(frame)
-        return redirect('add_slots_to_frame',frame_id=frame_id)
+        return redirect('add_slots_to_frame', frame_id=frame_id)
     return render(request, 'dialog/add_slots_to_frame.html', {'frame': frame, 'slots': slots})
 
 
 def add_slot_values(request, frame_id):
     frame = Frame.objects.get(id=frame_id)
-    slots = Slot.objects.filter(frames=frame)  # Lọc các đối tượng Slot đã liên kết với frame
+    slots = Slot.objects.filter(frames=frame)
+    examples = Example.objects.filter(frame=frame)
+
     if request.method == 'POST':
-        # Thêm các slot_value vào tất cả các slot trong frame
         for slot in slots:
-            slot_value_name = request.POST.get('slot_value_{}'.format(slot.id))  # Lấy giá trị slot_value từ form
-            if slot_value_name and not SlotValue.objects.filter(slot=slot, frame=frame, value_name=slot_value_name).exists():
-                slot_value = SlotValue(value_name=slot_value_name, frame=frame, slot=slot)
-                slot_value.save()
-                example = Example.objects.get(frame=frame, slot=slot)
-                slot_value = SlotValue.objects.get(slot=slot, frame=frame, value_name=slot_value_name)
-                example.slot_value = slot_value
+            slot_value_name = request.POST.get('slot_value_{}'.format(slot.id))
+            example = Example.objects.get(frame=frame, slot=slot)
+            if slot_value_name:
+                # Kiểm tra nếu example.slot_value không có giá trị, thì thêm mới SlotValue vào bảng SlotValue
+                if not example.slot_value:
+                    slot_value = SlotValue(value_name=slot_value_name, frame=frame, slot=slot)
+                    slot_value.save()
+                    example.slot_value = slot_value
+                else:
+                    # Nếu example.slot_value đã có giá trị, thì cập nhật lại giá trị mới
+                    example.slot_value.value_name = slot_value_name
+                    example.slot_value.save()
                 example.save()
-        return redirect('add_slots_to_frame', frame_id=frame_id)
-    return render(request, 'dialog/add_slot_values.html', {'frame': frame, 'slots': slots})
+        return redirect('frame_info', pk=frame_id)
+    return render(request, 'dialog/add_slot_values.html', {'frame': frame, 'slots': slots, 'examples': examples})
 
 

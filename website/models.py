@@ -57,13 +57,15 @@ class Slot(models.Model):
         return f"{self.slot_name}"
 
 
+
 class SlotValue(models.Model):
-    value_name = models.CharField(max_length=200)
+    value_name = models.CharField(max_length=200, null=True)
     frame = models.ForeignKey(Frame, on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot, on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.value_name}"
+
 
 
 class Example(models.Model):

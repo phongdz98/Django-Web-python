@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load slot_value_tags %}
+{% block content %}
+<h4>Frame Information</h4>
+<div class="card">
+  <div class="card-header">
+    {{current_frame.frame_name | upper}}
+  </div>
+  <div class="card-body">
+      {% for slot in current_slots %}
+        <p class="card-text"><strong>{{ slot.slot_name | upper }} :  {% get_slot_value slot current_frame %} </strong></p>
+      {% endfor %}
+
+  </div>
+</div>
+<br/>
+<br/>
+<a href="{% url 'frame'  %} " class="btn btn-secondary">Back</a>
+<a href="{% url 'delete_frame' pk=current_frame.id %}" class="btn btn-danger">Delete</a>
+<a href="{% url 'add_slot_values' frame_id=current_frame.id %}" class="btn btn btn-secondary">Update</a>
+{% endblock %}

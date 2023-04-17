@@ -8,7 +8,8 @@
             {% for slot in slots %}
             <div class="form-group mt-3">
                 <label class="form-label" for="slot_value_{{ slot.id }}">{{ slot.slot_name|upper }}:</label>
-                <input type="text" class="form-control" id="slot_value_{{ slot.id }}" name="slot_value_{{ slot.id }}">
+                <input type="text" class="form-control" id="slot_value_{{ slot.id }}" name="slot_value_{{ slot.id }}" value="{% for example in examples %}{% if example.slot == slot and example.frame == frame %}{{ example.slot_value.value_name }}{% endif %}{% endfor %}">
+
             </div>
             {% endfor %}
             <div class="form-group mt-3">
