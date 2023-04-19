@@ -29,5 +29,6 @@ urlpatterns = [
     path('delete_slot/<int:pk>', views.delete_slot, name='delete_slot'),
     path('add_slots_to_frame/<int:frame_id>', views.add_slots_to_frame, name='add_slots_to_frame'),
     path('add_slot_values/<int:frame_id>', views.add_slot_values, name='add_slot_values'),
+    path('dialog', views.dialog_view, name='dialog'),
 
 ]

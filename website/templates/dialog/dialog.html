@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dialog</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" name="start" value="Start">
+    </form>
+{% if start %}
+    {% if dialogs %}
+    {% for dialog in dialogs %}
+    {{ dialog.slot_name }} :{{ dialog.slot_value }}? {{ dialog.answer }} <br/>
+    {% endfor %}
+    {% endif %}
+
+{% endif %}
+{% if result %}
+Result: {{result}}
+{% else %}
+    <p>{{ question }} {{current_slot_index }} {{current_slot_value_index}} {{start}}</p>
+    <form method="post">
+        {% csrf_token %}
+        <input type="submit" name="answer" value="Yes">
+        <input type="submit" name="answer" value="No">
+    </form>
+{% endif %}
+
+</body>
+</html>

@@ -1,8 +1,10 @@
+from django.http import HttpResponse
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .form import SignUpForm, AddRecordForm, UpdateUserForm, PersonForm
-from .models import Record, User, Person, Frame, Slot, SlotValue, Example
+from .models import Record, User, Person, Frame, Slot, SlotValue, Example, Dialog
 
 
 def home(request):
@@ -345,5 +347,79 @@ def add_slot_values(request, frame_id):
                 example.save()
         return redirect('frame_info', pk=frame_id)
     return render(request, 'dialog/add_slot_values.html', {'frame': frame, 'slots': slots, 'examples': examples})
+
+
+# Dialog
+
+def dialog_view(request):
+    if 'start' in request.POST:
+        # Nếu nhấn vào nút "Bắt đầu dialog", đặt lại giá trị về 0
+        Dialog.objects.all().delete()
+        request.session['current_slot_index'] = 0
+        request.session['current_slot_value_index'] = 0
+        request.session['start'] = 1
+        request.session['result'] = 0
+        return redirect('dialog') # Redirect về lại trang dialog_view
+    else:
+        # Khoi tao ban dau
+        current_slot_index = request.session.get('current_slot_index', 0)
+        current_slot_value_index = request.session.get('current_slot_value_index', 0)
+        result = request.session.get('result', 0)
+        start = request.session.get('start', 0)
+        slots = list(Slot.objects.all())
+        slot = slots[current_slot_index]
+        slot_values = list(SlotValue.objects.filter(slot=slot))
+        value_names = list(set([slot_value.value_name for slot_value in slot_values]))
+        value_name = value_names[current_slot_value_index]
+
+        if request.method == 'POST':
+            answer = request.POST['answer']
+            if not result:
+                dialog = Dialog(slot_name=slot.slot_name, slot_value=value_name, answer=answer)
+                dialog.save()
+            if answer == 'Yes':
+                dialogs = Dialog.objects.all()
+                frame_answer = None
+                for dialog in dialogs:
+                    if dialog.answer == 'Yes':
+                        examples = Example.objects.filter(Q(slot__slot_name=dialog.slot_name) & Q(slot_value__value_name=dialog.slot_value))
+                        if not examples:
+                            result= 'Cant find data'
+                        else:
+                            frames = set()
+                            for example in examples:
+                                frames.add(example.frame)
+
+                            if frame_answer is None:
+                                frame_answer = frames
+                            else:
+                                frame_answer = frame_answer.intersection(frames)
+
+                if not result:
+                    if current_slot_index < len(slots)-1:
+                        current_slot_index += 1
+                        slot = slots[current_slot_index]
+                        current_slot_value_index = 0
+                        slot_values = list(SlotValue.objects.filter(slot=slot))
+                        value_names = list(set([slot_value.value_name for slot_value in slot_values]))
+                        value_name = value_names[current_slot_value_index]
+                    else:
+                        if frame_answer:
+                            result= ', '.join([frame.frame_name for frame in frame_answer])
+                        else:
+                            result = 'Cant find data'
+
+            elif answer == 'No':
+                if current_slot_value_index < len(value_names)-1:
+                    current_slot_value_index +=1
+                    value_name = value_names[current_slot_value_index]
+                else:
+                    result = 'Cant find data'
+        dialogs = Dialog.objects.all()
+        question = f"{slot.slot_name}: {value_name}"
+        request.session['current_slot_index'] = current_slot_index
+        request.session['current_slot_value_index'] = current_slot_value_index
+        request.session['result'] = result
+        return render(request, 'dialog/dialog.html', {'dialogs':dialogs,'result': result,'start': start,'question':question,'current_slot_index':current_slot_index, 'current_slot_value_index':current_slot_value_index})
 
 

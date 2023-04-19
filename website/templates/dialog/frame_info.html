@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load slot_value_tags %}
 {% block content %}
 <h4>Frame Information</h4>
 <div class="card">
@@ -8,7 +7,7 @@
   </div>
   <div class="card-body">
       {% for slot in current_slots %}
-        <p class="card-text"><strong>{{ slot.slot_name | upper }} :  {% get_slot_value slot current_frame %} </strong></p>
+        <p class="card-text"><strong>{{ slot.slot_name | upper }} :  {% for example in examples %}{% if example.slot == slot and example.frame == current_frame %}{{ example.slot_value.value_name }}{% endif %}{% endfor %} </strong></p>
       {% endfor %}
 
   </div>
