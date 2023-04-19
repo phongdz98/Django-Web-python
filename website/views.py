@@ -357,7 +357,6 @@ def dialog_view(request):
         Dialog.objects.all().delete()
         request.session['current_slot_index'] = 0
         request.session['current_slot_value_index'] = 0
-        request.session['start'] = 1
         request.session['result'] = 0
         return redirect('dialog') # Redirect về lại trang dialog_view
     else:
@@ -365,7 +364,6 @@ def dialog_view(request):
         current_slot_index = request.session.get('current_slot_index', 0)
         current_slot_value_index = request.session.get('current_slot_value_index', 0)
         result = request.session.get('result', 0)
-        start = request.session.get('start', 0)
         slots = list(Slot.objects.all())
         slot = slots[current_slot_index]
         slot_values = list(SlotValue.objects.filter(slot=slot))
@@ -416,10 +414,10 @@ def dialog_view(request):
                 else:
                     result = 'Cant find data'
         dialogs = Dialog.objects.all()
-        question = f"{slot.slot_name}: {value_name}"
+        question = f"{slot.slot_name} {value_name}"
         request.session['current_slot_index'] = current_slot_index
         request.session['current_slot_value_index'] = current_slot_value_index
         request.session['result'] = result
-        return render(request, 'dialog/dialog.html', {'dialogs':dialogs,'result': result,'start': start,'question':question,'current_slot_index':current_slot_index, 'current_slot_value_index':current_slot_value_index})
+        return render(request, 'dialog/dialog.html', {'dialogs':dialogs,'result': result,'question':question})
 
 

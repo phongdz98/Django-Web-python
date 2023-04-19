@@ -1,31 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Dialog</title>
-</head>
-<body>
-    <form method="post">
-        {% csrf_token %}
-        <input type="submit" name="start" value="Start">
-    </form>
-{% if start %}
-    {% if dialogs %}
-    {% for dialog in dialogs %}
-    {{ dialog.slot_name }} :{{ dialog.slot_value }}? {{ dialog.answer }} <br/>
-    {% endfor %}
-    {% endif %}
+{% extends 'base.html' %}
 
-{% endif %}
-{% if result %}
-Result: {{result}}
-{% else %}
-    <p>{{ question }} {{current_slot_index }} {{current_slot_value_index}} {{start}}</p>
-    <form method="post">
-        {% csrf_token %}
-        <input type="submit" name="answer" value="Yes">
-        <input type="submit" name="answer" value="No">
-    </form>
-{% endif %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <form method="post">
+                {% csrf_token %}
+                <div class="text-center">
+                    <button class="btn btn-primary" type="submit" name="start">Start</button>
+                </div>
+                </form>
+                <br/>
+                <div class="card">
+                    <div class="card-header">
+                        Dialog Chat Bot
+                    </div>
+                    <div class="card-body">
+                            <div class="mt-4">
+                                {% if dialogs %}
+                                    {% for dialog in dialogs %}
+                                    <p class="text-muted"><strong>Assistant:</strong> {{ dialog.slot_name }} {{ dialog.slot_value }}?</p>
+                                    <p class="text-primary"><strong>User:</strong> {{ dialog.answer }}</p>
+                                    {% endfor %}
+                                {% endif %}
+                                {% if not result %}
+                                    <p class="text-muted"><strong>Assistant:</strong> {{ question }}?</p>
+                                {% else %}
+                                    <p class="text-success"><strong>Result:</strong> {{ result }}</p>
+                                {% endif %}
 
-</body>
-</html>
+                            </div>
+                    </div>
+                </div>
+                <br/>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="text-center">
+                        <button class="btn btn-success" type="submit" name="answer" value="Yes">Yes</button>
+                        <button class="btn btn-danger" type="submit" name="answer" value="No">No</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
