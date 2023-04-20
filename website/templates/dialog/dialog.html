@@ -20,7 +20,11 @@
                                 {% if dialogs %}
                                     {% for dialog in dialogs %}
                                     <p class="text-muted"><strong>Assistant:</strong> {{ dialog.slot_name }} {{ dialog.slot_value }}?</p>
-                                    <p class="text-primary"><strong>User:</strong> {{ dialog.answer }}</p>
+                                    {% if dialog.answer == 'Yes' %}
+                                    <p class="text-primary"><strong class="text-muted">User:</strong> {{ dialog.answer }}</p>
+                                    {% else %}
+                                    <p class="text-danger"><strong class="text-muted">User:</strong> {{ dialog.answer }}</p>
+                                    {% endif %}
                                     {% endfor %}
                                 {% endif %}
                                 {% if not result %}

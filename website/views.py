@@ -268,7 +268,8 @@ def frame_info(request, pk):
         current_frame = Frame.objects.get(id=pk)
         slots = Slot.objects.filter(frames=current_frame)
         examples = Example.objects.filter(frame=current_frame)
-        return render(request, 'dialog/frame_info.html', {'current_frame': current_frame, 'current_slots': slots, 'examples':examples})
+        return render(request, 'dialog/frame_info.html',
+                      {'current_frame': current_frame, 'current_slots': slots, 'examples': examples})
     else:
         messages.success(request, "You must be Logged In to View That Page!!!")
         return redirect('home')
@@ -352,6 +353,7 @@ def add_slot_values(request, frame_id):
 # Dialog for expert system
 
 def reset_dialog(request):
+    # Đặt lại giá trị cho session  về 0
     request.session.update({
         'current_slot_index': 0,
         'current_slot_value_index': 0,
@@ -361,19 +363,22 @@ def reset_dialog(request):
     })
 
 
+# Lọc các giá trị của slot_value dựa trên frame_answer
 def get_slot_values(slot, frame_answer):
+    queryset = SlotValue.objects.filter(slot=slot)
     if frame_answer:
-        return list(SlotValue.objects.filter(slot=slot, frame__frame_name__in = frame_answer))
-    else:
-        return list(SlotValue.objects.filter(slot=slot))
+        queryset = queryset.filter(frame__frame_name__in=frame_answer)
+    return queryset
+
+
+def get_current_value_name(slot, frame_answer, current_slot_value_index):
+    slot_values = get_slot_values(slot, frame_answer).order_by('value_name')
+    value_names = slot_values.values_list('value_name', flat=True).distinct()
+    value_name = value_names[current_slot_value_index]
+    return value_names, value_name
 
 
 def dialog_view(request):
-    if 'start' in request.POST:
-        # Nếu nhấn vào nút "Start", đặt lại giá trị cho session và reset bảng Dialog về 0
-        reset_dialog(request)
-        return redirect('dialog')
-
     # Lấy giá trị của session
     current_slot_index = request.session.get('current_slot_index', 0)
     current_slot_value_index = request.session.get('current_slot_value_index', 0)
@@ -382,16 +387,19 @@ def dialog_view(request):
     dialogs = request.session.get('dialogs', [])
 
     # Lấy danh sách slots và slot hiện tại
-    slots = list(Slot.objects.all())
+    slots = Slot.objects.all()
     slot = slots[current_slot_index]
 
     # Lọc các giá trị của slot_value dựa trên frame_answer
-    slot_values = get_slot_values(slot, frame_answer)
-    value_names = list(set([slot_value.value_name for slot_value in slot_values]))
-    value_name = value_names[current_slot_value_index]
+    value_names, value_name = get_current_value_name(slot, frame_answer, current_slot_value_index)
 
     # Xử lý khi form được submit
     if request.method == 'POST':
+        if 'start' in request.POST:
+            # Nếu nhấn vào nút "Start", đặt lại giá trị cho session  về 0
+            reset_dialog(request)
+            return redirect('dialog')
+
         answer = request.POST['answer']
         # Lưu lại câu hỏi và câu trả lời nếu như chưa tìm ra được result
         if not result:
@@ -405,50 +413,38 @@ def dialog_view(request):
                     examples = Example.objects.filter(Q(slot__slot_name=dialog['slot_name'])
                                                       & Q(slot_value__value_name=dialog['slot_value']))
                     if not examples:
-                        result= 'Cant find data'
-                    else:
-                        frames = set()
-                        for example in examples:
-                            frames.add(example.frame.frame_name)
-
-                        if frame_answer is None:
-                            frame_answer = frames
-                        else:
-                            frame_answer = frame_answer.intersection(frames)
+                        result = 'Cant find data'
+                        break
+                    frames = set(examples.values_list('frame__frame_name', flat=True))
+                    frame_answer = frames if frame_answer is None else frame_answer.intersection(frames)
             if not result:
                 # Nếu chưa xét hết slot thì chuyển sang  slot tiếp theo
-                if current_slot_index < len(slots)-1:
+                if current_slot_index < len(slots) - 1:
                     current_slot_index += 1
                     slot = slots[current_slot_index]
                     current_slot_value_index = 0
                     frame_answer = list(frame_answer)
-                    slot_values = get_slot_values(slot, frame_answer)
-                    value_names = list(set([slot_value.value_name for slot_value in slot_values]))
-                    value_name = value_names[current_slot_value_index]
+                    value_names, value_name = get_current_value_name(slot, frame_answer, current_slot_value_index)
                 # Nếu đã xét hết slot thì đưa ra kết quả cuối cùng
                 else:
-                    if frame_answer:
-                        result= ', '.join(list(frame_answer))
-                    else:
-                        result = 'Cant find data'
+                    result = ', '.join(list(frame_answer))
 
         # Xử lí khi câu trả lời là No
         elif answer == 'No':
-            if current_slot_value_index < len(value_names)-1:
-                current_slot_value_index +=1
+            if current_slot_value_index < len(value_names) - 1:
+                current_slot_value_index += 1
                 value_name = value_names[current_slot_value_index]
             else:
                 result = 'Cant find data'
     # Hiển thị kết quả
     question = f"{slot.slot_name} {value_name}"
-    request.session['current_slot_index'] = current_slot_index
-    request.session['current_slot_value_index'] = current_slot_value_index
-    request.session['result'] = result
-    request.session['dialogs'] = dialogs
-    if frame_answer is not None:
-        request.session['frame_answer'] = list(frame_answer)
-    else:
-        request.session['frame_answer'] = []
+    request.session.update({
+        'current_slot_index': current_slot_index,
+        'current_slot_value_index': current_slot_value_index,
+        'result': result,
+        'dialogs': dialogs,
+        'frame_answer': list(frame_answer) if frame_answer is not None else []
+    })
     predicted_results = ' or '.join(list(frame_answer))
     context = {
         'predicted_results': predicted_results,
@@ -457,4 +453,3 @@ def dialog_view(request):
         'question': question,
     }
     return render(request, 'dialog/dialog.html', context)
-
