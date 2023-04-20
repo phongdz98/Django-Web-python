@@ -352,14 +352,15 @@ def add_slot_values(request, frame_id):
 
 # Dialog for expert system
 
-def reset_dialog(request):
+def start_dialog(request):
     # Đặt lại giá trị cho session  về 0
     request.session.update({
         'current_slot_index': 0,
         'current_slot_value_index': 0,
         'result': 0,
         'frame_answer': [],
-        'dialogs': []
+        'dialogs': [],
+        'view_question': 1
     })
 
 
@@ -385,6 +386,7 @@ def dialog_view(request):
     result = request.session.get('result', 0)
     frame_answer = request.session.get('frame_answer', [])
     dialogs = request.session.get('dialogs', [])
+    view_question = request.session.get('view_question', 0)
 
     # Lấy danh sách slots và slot hiện tại
     slots = Slot.objects.all()
@@ -397,7 +399,10 @@ def dialog_view(request):
     if request.method == 'POST':
         if 'start' in request.POST:
             # Nếu nhấn vào nút "Start", đặt lại giá trị cho session  về 0
-            reset_dialog(request)
+            start_dialog(request)
+            return redirect('dialog')
+        if 'reset' in request.POST:
+            request.session['view_question'] = 0
             return redirect('dialog')
 
         answer = request.POST['answer']
@@ -408,13 +413,17 @@ def dialog_view(request):
         # Xử lí khi câu trả lời là Yes
         if answer == 'Yes':
             frame_answer = None
+            # Khảo sát dialog để tìm frame phù hợp với dialog
             for dialog in dialogs:
                 if dialog['answer'] == 'Yes':
                     examples = Example.objects.filter(Q(slot__slot_name=dialog['slot_name'])
                                                       & Q(slot_value__value_name=dialog['slot_value']))
+                    # Nếu không tìm thấy examples phù hợp với dialog thì trả về không tìm thấy kết quả và thoát
+                    # vòng lặp
                     if not examples:
                         result = 'Cant find data'
                         break
+                    # Tìm thấy thì lưu vào biến frame_answer . Dùng intersection để  tìm giao 2 tập hợp
                     frames = set(examples.values_list('frame__frame_name', flat=True))
                     frame_answer = frames if frame_answer is None else frame_answer.intersection(frames)
             if not result:
@@ -430,10 +439,12 @@ def dialog_view(request):
                     result = ', '.join(list(frame_answer))
 
         # Xử lí khi câu trả lời là No
-        elif answer == 'No':
+        elif answer == 'No' and not result:
+            # Nếu chưa xét hết slot value thì chuyển sang  slot value tiếp theo
             if current_slot_value_index < len(value_names) - 1:
                 current_slot_value_index += 1
                 value_name = value_names[current_slot_value_index]
+            # Nếu đã xét hết thì mà trả về không tìm thấy kết quả
             else:
                 result = 'Cant find data'
     # Hiển thị kết quả
@@ -451,5 +462,6 @@ def dialog_view(request):
         'dialogs': dialogs,
         'result': result,
         'question': question,
+        'view_question':view_question
     }
     return render(request, 'dialog/dialog.html', context)

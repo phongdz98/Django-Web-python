@@ -8,8 +8,11 @@
                 {% csrf_token %}
                 <div class="text-center">
                     <button class="btn btn-primary" type="submit" name="start">Start</button>
+                    <button class="btn btn-primary" type="submit" name="reset">Reset</button>
                 </div>
+
                 </form>
+                {% if view_question  %}
                 <br/>
                 <div class="card">
                     <div class="card-header">
@@ -46,6 +49,7 @@
                         <button class="btn btn-danger" type="submit" name="answer" value="No">No</button>
                     </div>
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>
