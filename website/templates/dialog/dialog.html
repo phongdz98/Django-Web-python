@@ -25,6 +25,8 @@
                                 {% endif %}
                                 {% if not result %}
                                     <p class="text-muted"><strong>Assistant:</strong> {{ question }}?</p>
+                                    <br/>
+                                    <p class="text-muted"><strong>Predicted results:</strong> {{ predicted_results }}?</p>
                                 {% else %}
                                     <p class="text-success"><strong>Result:</strong> {{ result }}</p>
                                 {% endif %}

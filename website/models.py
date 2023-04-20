@@ -75,12 +75,3 @@ class Example(models.Model):
 
     def __str__(self):
         return f'{self.frame} - {self.slot} - {self.slot_value}'
-
-
-class Dialog(models.Model):
-    slot_name = models.CharField(max_length=255)  # Tên của slot
-    slot_value = models.CharField(max_length=255)  # Giá trị của slot
-    answer = models.CharField(max_length=3)  # Câu trả lời của người dùng (yes/no)
-
-    def __str__(self):
-        return f"{self.slot_name}: {self.slot_value} - {self.answer}"

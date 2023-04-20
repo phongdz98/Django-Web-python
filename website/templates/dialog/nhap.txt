@@ -1,0 +1,11 @@
+frame_answer = set()
+for dialog in dialogs:
+    if dialog.answer == 'Yes':
+        examples = Example.objects.filter(Q(slot__slot_name=dialog.slot_name) & Q(slot_value__value_name=dialog.slot_value))
+        if not examples:
+            result= 'Cant find data'
+        else:
+            for example in examples:
+                frame = example.frame
+                frame_answer.add(frame)
+request.session['frame_answer'] = list(frame_answer)
