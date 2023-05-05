@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -119,7 +118,7 @@ def login_user(request):
         else:
             messages.success(request, "Error Logging In!")
             return redirect('login')
-    return render(request, 'login.html')
+    return render(request, 'user/login.html')
 
 
 def logout_user(request):
@@ -253,9 +252,12 @@ def frame_read(request):
         frames = Frame.objects.all()
         if request.method == 'POST':
             frame_name = request.POST.get('frame-name')
-            frame = Frame(frame_name=frame_name)
-            frame.save()
-            messages.success(request, f"Frame Added....")
+            if Frame.objects.filter(frame_name=frame_name).exists():
+                messages.error(request, f"The frame '{frame_name}' already exists!")
+            else:
+                frame = Frame(frame_name=frame_name)
+                frame.save()
+                messages.success(request, f"Frame '{frame_name}' added successfully!")
             return redirect('frame')
         return render(request, 'dialog/frames.html', {"frames": frames})
     else:
@@ -316,13 +318,22 @@ def add_slots_to_frame(request, frame_id):
     frame = Frame.objects.get(id=frame_id)
     slots = Slot.objects.all()
     if request.method == 'POST':
-        # Lấy danh sách các slot được chọn từ form
-        selected_slots = request.POST.getlist('selected_slots')
-        # Thêm các slot được chọn vào frame
-        for slot_id in selected_slots:
-            slot = Slot.objects.get(id=slot_id)
-            slot.frames.add(frame)
-        return redirect('add_slots_to_frame', frame_id=frame_id)
+        if 'add' in request.POST:
+            # Lấy danh sách các slot được chọn từ form
+            selected_slots = request.POST.getlist('selected_slots')
+            # Thêm các slot được chọn vào frame
+            for slot_id in selected_slots:
+                slot = Slot.objects.get(id=slot_id)
+                slot.frames.add(frame)
+            return redirect('add_slots_to_frame', frame_id=frame_id)
+        elif 'delete' in request.POST:
+            # Lấy danh sách các slot được chọn từ form
+            selected_slots = request.POST.getlist('selected_slots')
+            # Xoa các slot được chọn neu co trong frame
+            for slot_id in selected_slots:
+                slot = Slot.objects.get(id=slot_id)
+                slot.frames.remove(frame)
+            return redirect('add_slots_to_frame',frame_id=frame_id)
     return render(request, 'dialog/add_slots_to_frame.html', {'frame': frame, 'slots': slots})
 
 

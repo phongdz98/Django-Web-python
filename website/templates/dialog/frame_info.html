@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<h4>Frame Information</h4>
+<h4>Экземпляр</h4>
 <div class="card">
   <div class="card-header">
     {{current_frame.frame_name | upper}}
@@ -14,7 +14,7 @@
 </div>
 <br/>
 <br/>
-<a href="{% url 'frame'  %} " class="btn btn-secondary">Back</a>
-<a href="{% url 'delete_frame' pk=current_frame.id %}" class="btn btn-danger">Delete</a>
-<a href="{% url 'add_slot_values' frame_id=current_frame.id %}" class="btn btn btn-secondary">Update</a>
+<a href="{% url 'frame'  %} " class="btn btn-secondary">Назад</a>
+<a href="{% url 'delete_frame' pk=current_frame.id %}" class="btn btn-danger">Удалить</a>
+<a href="{% url 'add_slot_values' frame_id=current_frame.id %}" class="btn btn btn-secondary">Изменить</a>
 {% endblock %}

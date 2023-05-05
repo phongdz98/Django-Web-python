@@ -2,26 +2,26 @@
 {% block content %}
 <div class="container"><div class="row">
    <div class="col-md-3">
-       <h3>Add Slot</h3><br/>
+       <h3>Добовить слот</h3><br/>
         <form method="POST" >
         {% csrf_token %}
-            <label class="form-label" for="exampleInputSlotName">Slot Name</label>
+            <label class="form-label" for="exampleInputSlotName">Название слота</label>
             <input   class="form-control" id="exampleInputSlotName" name="slot-name" placeholder="Slot Name" required>
             <br/>
-            <button type="submit" class="btn btn-secondary">Add</button>
+            <button type="submit" class="btn btn-secondary">Добавить</button>
         </form>
    </div>
     <div class="col-md-8">
     <div class="d-flex justify-content-between">
-        <h3>Frame</h3>
+        <h3>Слот</h3>
     </div>
     <br/>
     <table class="table table-bordered table-hover">
     <thead class="table-dark ">
     <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Slot</th>
-        <th scope="col" colspan="2" style="width: 30%;">Management</th>
+        <th scope="col">№</th>
+        <th scope="col">Слот</th>
+        <th scope="col" colspan="2" style="width: 30%;">Управление</th>
     </tr>
   </thead>
   <tbody>
@@ -35,7 +35,7 @@
                     <td width="15%">
                         <a class="link-offset-2
                      link-offset-3-hover link-underline link-underline-opacity-0
-                     link-underline-opacity-75-hover" href="{% url 'delete_slot' pk=slot.id %}">Delete</a>
+                     link-underline-opacity-75-hover" href="{% url 'delete_slot' pk=slot.id %}">Удалить</a>
                     </td>
                 </tr>
             {% endfor %}

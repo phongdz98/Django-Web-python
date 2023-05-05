@@ -22,13 +22,13 @@ urlpatterns = [
     path('add_person', views.add_person, name='add_person'),
 
     # Expert system URLS
-    path('frame', views.frame_read, name='frame'),
-    path('delete_frame/<int:pk>', views.delete_frame, name='delete_frame'),
-    path('frame_info/<int:pk>', views.frame_info, name='frame_info'),
-    path('slot', views.slot_read, name='slot'),
-    path('delete_slot/<int:pk>', views.delete_slot, name='delete_slot'),
-    path('add_slots_to_frame/<int:frame_id>', views.add_slots_to_frame, name='add_slots_to_frame'),
-    path('add_slot_values/<int:frame_id>', views.add_slot_values, name='add_slot_values'),
-    path('dialog', views.dialog_view, name='dialog'),
+    path('expert_system/frame', views.frame_read, name='frame'),
+    path('expert_system/delete_frame/<int:pk>', views.delete_frame, name='delete_frame'),
+    path('expert_system/frame_info/<int:pk>', views.frame_info, name='frame_info'),
+    path('expert_system/slot', views.slot_read, name='slot'),
+    path('expert_system/delete_slot/<int:pk>', views.delete_slot, name='delete_slot'),
+    path('expert_system/add_slots_to_frame/<int:frame_id>', views.add_slots_to_frame, name='add_slots_to_frame'),
+    path('expert_system/add_slot_values/<int:frame_id>', views.add_slot_values, name='add_slot_values'),
+    path('expert_system/dialog', views.dialog_view, name='dialog'),
 
 ]

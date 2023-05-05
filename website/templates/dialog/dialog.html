@@ -7,8 +7,8 @@
                 <form method="post">
                 {% csrf_token %}
                 <div class="text-center">
-                    <button class="btn btn-primary" type="submit" name="start">Start</button>
-                    <button class="btn btn-primary" type="submit" name="reset">Reset</button>
+                    <button class="btn btn-primary" type="submit" name="start">Начать</button>
+                    <button class="btn btn-danger" type="submit" name="reset">Отмена</button>
                 </div>
 
                 </form>
@@ -16,26 +16,26 @@
                 <br/>
                 <div class="card">
                     <div class="card-header">
-                        Dialog Chat Bot
+                        Синтез ТП
                     </div>
                     <div class="card-body">
                             <div class="mt-4">
                                 {% if dialogs %}
                                     {% for dialog in dialogs %}
-                                    <p class="text-muted"><strong>Assistant:</strong> {{ dialog.slot_name }} {{ dialog.slot_value }}?</p>
+                                    <p class="text-muted"><strong>Ассистент:</strong> {{ dialog.slot_name }} {{ dialog.slot_value }}?</p>
                                     {% if dialog.answer == 'Yes' %}
-                                    <p class="text-primary"><strong class="text-muted">User:</strong> {{ dialog.answer }}</p>
+                                    <p class="text-primary"><strong class="text-muted">Пользователь:</strong> Да </p>
                                     {% else %}
-                                    <p class="text-danger"><strong class="text-muted">User:</strong> {{ dialog.answer }}</p>
+                                    <p class="text-danger"><strong class="text-muted">Пользователь:</strong> Нет</p>
                                     {% endif %}
                                     {% endfor %}
                                 {% endif %}
                                 {% if not result %}
-                                    <p class="text-muted"><strong>Assistant:</strong> {{ question }}?</p>
+                                    <p class="text-muted"><strong>Ассистент:</strong> {{ question }}?</p>
                                     <br/>
-                                    <p class="text-muted"><strong>Predicted results:</strong> {{ predicted_results }}?</p>
+                                    <p class="text-muted"><strong>Прогнозируемые результаты:</strong> {{ predicted_results }}?</p>
                                 {% else %}
-                                    <p class="text-success"><strong>Result:</strong> {{ result }}</p>
+                                    <p class="text-success"><strong>Ответ:</strong> {{ result }}</p>
                                 {% endif %}
 
                             </div>
@@ -45,8 +45,8 @@
                 <form method="post">
                     {% csrf_token %}
                     <div class="text-center">
-                        <button class="btn btn-success" type="submit" name="answer" value="Yes">Yes</button>
-                        <button class="btn btn-danger" type="submit" name="answer" value="No">No</button>
+                        <button class="btn btn-success" type="submit" name="answer" value="Yes">Да</button>
+                        <button class="btn btn-danger" type="submit" name="answer" value="No">Нет</button>
                     </div>
                 </form>
                 {% endif %}

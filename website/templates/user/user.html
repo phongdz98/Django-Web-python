@@ -1,18 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="d-flex justify-content-between">
-        <h3>Users</h3>
-        <a href="{% url 'register' %}" class="btn btn-primary">Add User</a>
+        <h3>Пользователь</h3>
+        <a href="{% url 'register' %}" class="btn btn-primary">Добавить пользователя</a>
     </div>
     <br/>
     <table class="table table-bordered table-hover">
     <thead class="table-dark ">
     <tr>
-      <th scope="col">Username </th>
-      <th scope="col">Full Name</th>
-        <th scope="col">Email address</th>
-        <th scope="col">Role</th>
-        <th scope="col">ID</th>
+        <th scope="col">№</th>
+      <th scope="col">Логин пользователя </th>
+      <th scope="col">Имя персонала</th>
+        <th scope="col">Почта</th>
+        <th scope="col">Роль</th>
+
     </tr>
   </thead>
   <tbody>
@@ -21,16 +22,17 @@
 
             {% for u in users %}
                 <tr>
+                    <td>{{ u.id }}</td>
                     <td><a class="link-offset-2
                      link-offset-3-hover link-underline link-underline-opacity-0
                      link-underline-opacity-75-hover" href="{% url 'user_info' u.id %}">
                         {{ u.username}}</a></td>
                     <td>{{ u.first_name }} {{ u.last_name }}</td>
                     <td>{{ u.email }}</td>
-                    <td>{% if u.is_admin %}  Admin {% elif u.is_technician %}
-                        Technician {% elif u.is_employee %} Employee</td>
+                    <td>{% if u.is_admin %}  Админстратор {% elif u.is_technician %}
+                        Технолог {% elif u.is_employee %} Рабочий</td>
                     {% endif %}
-                    <td>{{ u.id }}</td>
+
                 </tr>
             {% endfor %}
         {% endif %}

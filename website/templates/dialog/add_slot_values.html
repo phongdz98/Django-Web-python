@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container mt-5">
-        <h1 class="mb-3">Add Slots Value</h1>
-        <h2>Frame: {{ frame.frame_name }}</h2>
+        <h1 class="mb-3">Добавить  значений слотов</h1>
+        <h2>Фрейм: {{ frame.frame_name }}</h2>
         <form method="POST" >
             {% csrf_token %}
             {% for slot in slots %}
@@ -13,7 +13,7 @@
             </div>
             {% endfor %}
             <div class="form-group mt-3">
-                <input type="submit" class="btn btn-primary" value="Add Slots Value ">
+                <input type="submit" class="btn btn-primary" value="Ок">
             </div>
         </form>
     </div>

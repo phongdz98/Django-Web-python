@@ -8,23 +8,26 @@
     <div class="collapse navbar-collapse" >
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Admin</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Админ</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'users'%}">Users</a>
+          <a class="nav-link" href="{% url 'users'%}">Аккаунт</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'person'%}">Person</a>
+          <a class="nav-link" href="{% url 'person'%}">Персонал</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="">Технологический процесс</a>
         </li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Expert system
+            Экспертная система
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url 'frame' %}">Frame</a></li>
-            <li><a class="dropdown-item" href="{% url 'slot' %}">Slot</a></li>
+            <li><a class="dropdown-item" href="{% url 'frame' %}">Фрейм</a></li>
+            <li><a class="dropdown-item" href="{% url 'slot' %}">Слот</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'dialog' %}">Dialog</a></li>
+            <li><a class="dropdown-item" href="{% url 'dialog' %}">Диалог</a></li>
           </ul>
         </li>
       </ul>
@@ -32,7 +35,7 @@
   </div>
 </nav>
   {% elif user.is_technician%}
-    <nav class="navbar navbar-expand-sm bg-light navbar-light">
+  <nav class="navbar navbar-expand-sm bg-light navbar-light">
   <div class="container-fluid">
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBottom" aria-controls="navbarBottom" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -40,16 +43,21 @@
     <div class="collapse navbar-collapse" >
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Technician</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Технолог</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home'%}">Person</a>
+          <a class="nav-link" href="">Технологический процесс</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Option 2</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Option 3</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Экспертная система
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'frame' %}">Фрейм</a></li>
+            <li><a class="dropdown-item" href="{% url 'slot' %}">Слот</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'dialog' %}">Диалог</a></li>
+          </ul>
         </li>
       </ul>
     </div>
@@ -64,16 +72,21 @@
     <div class="collapse navbar-collapse" >
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Employee</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'home'%}">Рабочий</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{% url 'home'%}">Person</a>
+          <a class="nav-link" href="">Технологический процесс</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Option 2</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Option 3</a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Экспертная система
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{% url 'frame' %}">Фрейм</a></li>
+            <li><a class="dropdown-item" href="{% url 'slot' %}">Слот</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'dialog' %}">Диалог</a></li>
+          </ul>
         </li>
       </ul>
     </div>

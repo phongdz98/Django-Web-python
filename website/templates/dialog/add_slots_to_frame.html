@@ -2,7 +2,7 @@
 {% block content %}
 <div class="container"><div class="row">
    <div class="col-md-4">
-    <h3>Add Slot</h3>
+    <h3>Слоты</h3>
     <br/>
     <form method="POST" >
         {% csrf_token %}
@@ -11,15 +11,16 @@
                 <option value="{{ slot.id }}">{{ slot.slot_name }}</option>
             {% endfor %}
         </select><br/>
-        <button type="submit" class="btn btn-secondary">Add</button>
-        <a href="{% url 'frame' %} " class="btn btn-secondary">Back</a>
+        <button type="submit" class="btn btn-secondary" name="add">Добавить</button>
+        <button type="submit" class="btn btn-danger" name="delete">Удалить</button>
+        <a href="{% url 'frame' %} " class="btn btn-secondary">Назад</a>
 
     </form>
     </div>
     <div class="col-md-6">
         <div class="card">
           <h4 class="card-header">
-           <strong>Frame {{ frame.frame_name }}</strong>
+           <strong>Фрейм {{ frame.frame_name }}</strong>
           </h4>
           <ul class="list-group list-group-flush">
             {% for slot in frame.slot_set.all %}
